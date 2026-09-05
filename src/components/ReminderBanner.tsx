@@ -1,7 +1,7 @@
 "use client";
 
 import { Bill } from "@/types/bill";
-import { AlertTriangle, Clock } from "lucide-react";
+import { AlertCircle, Clock } from "lucide-react";
 
 export function ReminderBanner({ bills }: { bills: Bill[] }) {
   const today = new Date();
@@ -33,7 +33,7 @@ export function ReminderBanner({ bills }: { bills: Bill[] }) {
           key={bill.id}
           className="bg-red-50 border-2 border-red-200 rounded-2xl p-4 flex items-center gap-3"
         >
-          <AlertTriangle className="w-6 h-6 text-red-600 flex-shrink-0" />
+          <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0" />
           <p className="text-red-700 text-lg">
             <span className="font-semibold">{bill.name}</span> was due{" "}
             {new Date(bill.dueDate).toLocaleDateString("en-AU", {

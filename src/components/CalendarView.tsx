@@ -2,7 +2,13 @@
 
 import { useState, useMemo } from "react";
 import { Bill } from "@/types/bill";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Check,
+  Clock,
+  AlertCircle,
+} from "lucide-react";
 
 export function CalendarView({
   bills,
@@ -53,7 +59,7 @@ export function CalendarView({
     );
   }
 
-  function dotColor(dayBills: Bill[]) {
+  function dayStatus(dayBills: Bill[]): "overdue" | "due" | "paid" {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -62,9 +68,17 @@ export function CalendarView({
     );
     const hasUnpaid = dayBills.some((b) => !b.paid);
 
-    if (isOverdue) return "bg-red-500";
-    if (hasUnpaid) return "bg-amber-500";
-    return "bg-[var(--calendar-paid-dot)]";
+    if (isOverdue) return "overdue";
+    if (hasUnpaid) return "due";
+    return "paid";
+  }
+
+  function StatusIcon({ status }: { status: "overdue" | "due" | "paid" }) {
+    if (status === "overdue")
+      return <AlertCircle className="w-3.5 h-3.5 text-red-500" />;
+    if (status === "due")
+      return <Clock className="w-3.5 h-3.5 text-amber-500" />;
+    return <Check className="w-3.5 h-3.5 text-[var(--calendar-paid-dot)]" />;
   }
 
   function changeMonth(offset: number) {
@@ -110,6 +124,7 @@ export function CalendarView({
           if (!date) return <div key={i} />;
           const dayBills = billsOnDay(date);
           const clickable = dayBills.length > 0;
+          const status = clickable ? dayStatus(dayBills) : null;
 
           return (
             <button
@@ -131,10 +146,10 @@ export function CalendarView({
               <span className="text-sm text-[var(--text-primary)]">
                 {date.getDate()}
               </span>
-              {dayBills.length > 0 && (
-                <div
-                  className={`w-2 h-2 rounded-full mt-1 ${dotColor(dayBills)}`}
-                />
+              {status && (
+                <div className="mt-1">
+                  <StatusIcon status={status} />
+                </div>
               )}
             </button>
           );
@@ -143,16 +158,13 @@ export function CalendarView({
 
       <div className="flex items-center gap-4 mt-4 text-sm text-[var(--text-secondary)]">
         <span className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-red-500 inline-block" />{" "}
-          Overdue
+          <AlertCircle className="w-3.5 h-3.5 text-red-500" /> Overdue
         </span>
         <span className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />{" "}
-          Due
+          <Clock className="w-3.5 h-3.5 text-amber-500" /> Due
         </span>
         <span className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-[var(--calendar-paid-dot)] inline-block" />{" "}
-          Paid
+          <Check className="w-3.5 h-3.5 text-[var(--calendar-paid-dot)]" /> Paid
         </span>
       </div>
     </div>

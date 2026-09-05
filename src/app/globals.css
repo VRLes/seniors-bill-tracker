@@ -20,21 +20,21 @@
 }
 
 .dark {
-  --bg-page: #1b2b12;
-  --bg-card: #24371a;
-  --text-primary: #f1f5ec;
-  --text-secondary: #b7c7a9;
-  --border-default: #3a4d2c;
+  --bg-page: #1a1a1a;
+  --bg-card: #262626;
+  --text-primary: #f1f1f1;
+  --text-secondary: #b0b0b0;
+  --border-default: #3a3a3a;
   --icon-bg: #3b5c24;
   --icon-text: #c0dd97;
   --accent-text: #9ccb5e;
   --accent-button-bg: #4c7a2a;
   --accent-button-hover: #5f9636;
-  --banner-ok-bg: #24371a;
+  --banner-ok-bg: #22301a;
   --banner-ok-border: #4c7a2a;
   --banner-ok-text: #b9e08a;
   --calendar-today-border: #9ccb5e;
-  --calendar-hover-bg: #2e4620;
+  --calendar-hover-bg: #2e2e2e;
   --calendar-paid-dot: #9ccb5e;
 }
 
