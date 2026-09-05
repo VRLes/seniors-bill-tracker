@@ -1,26 +1,45 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-page: #f4f7f2;
+  --bg-card: #ffffff;
+  --text-primary: #1a1a1a;
+  --text-secondary: #5f5e5a;
+  --border-default: #e5e7eb;
+  --icon-bg: #c0dd97;
+  --icon-text: #27500a;
+  --accent-text: #3b6d11;
+  --accent-button-bg: #3b6d11;
+  --accent-button-hover: #27500a;
+  --banner-ok-bg: #eaf3de;
+  --banner-ok-border: #97c459;
+  --banner-ok-text: #27500a;
+  --calendar-today-border: #3b6d11;
+  --calendar-hover-bg: #eaf3de;
+  --calendar-paid-dot: #639922;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --bg-page: #1b2b12;
+  --bg-card: #24371a;
+  --text-primary: #f1f5ec;
+  --text-secondary: #b7c7a9;
+  --border-default: #3a4d2c;
+  --icon-bg: #3b5c24;
+  --icon-text: #c0dd97;
+  --accent-text: #9ccb5e;
+  --accent-button-bg: #4c7a2a;
+  --accent-button-hover: #5f9636;
+  --banner-ok-bg: #24371a;
+  --banner-ok-border: #4c7a2a;
+  --banner-ok-text: #b9e08a;
+  --calendar-today-border: #9ccb5e;
+  --calendar-hover-bg: #2e4620;
+  --calendar-paid-dot: #9ccb5e;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--bg-page);
+  color: var(--text-primary);
   font-family: Arial, Helvetica, sans-serif;
 }

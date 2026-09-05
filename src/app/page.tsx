@@ -1,69 +1,175 @@
-import Image from "next/image";
+"use client";
 
+import { useState, useEffect, useMemo } from "react";
+import { Bill } from "@/types/bill";
+import { sampleBills } from "@/data/sampleBills";
+import { BillIcon } from "@/components/BillIcon";
+import { AddBillForm } from "@/components/AddBillForm";
+import { ReminderBanner } from "@/components/ReminderBanner";
+import { CalendarView } from "@/components/CalendarView";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import Link from "next/link";
 export default function Home() {
+  const [bills, setBills] = useState<Bill[]>([]);
+  const [highlightedIds, setHighlightedIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    const saved = localStorage.getItem("bills");
+    if (saved) {
+      setBills(JSON.parse(saved));
+    } else {
+      setBills(sampleBills);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (bills.length > 0) {
+      localStorage.setItem("bills", JSON.stringify(bills));
+    }
+  }, [bills]);
+
+  const summary = useMemo(() => {
+    const today = new Date();
+    const in7days = new Date();
+    in7days.setDate(today.getDate() + 7);
+
+    const unpaid = bills.filter((b) => !b.paid);
+    const dueSoon = unpaid.filter((b) => {
+      const due = new Date(b.dueDate);
+      return due >= today && due <= in7days;
+    });
+    const overdue = unpaid.filter((b) => new Date(b.dueDate) < today);
+    const totalOwing = unpaid.reduce((sum, b) => sum + b.amount, 0);
+
+    return {
+      dueSoonCount: dueSoon.length,
+      overdueCount: overdue.length,
+      totalOwing,
+    };
+  }, [bills]);
+
+  function handleAdd(bill: Bill) {
+    setBills((prev) => [...prev, bill]);
+  }
+
+  function togglePaid(id: string) {
+    setBills((prev) =>
+      prev.map((b) => (b.id === id ? { ...b, paid: !b.paid } : b)),
+    );
+  }
+
+  function deleteBill(id: string) {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this bill?",
+    );
+    if (confirmed) {
+      setBills((prev) => prev.filter((b) => b.id !== id));
+    }
+  }
+
+  function handleSelectDay(dayBills: Bill[]) {
+    const ids = new Set(dayBills.map((b) => b.id));
+    setHighlightedIds(ids);
+
+    const firstId = dayBills[0]?.id;
+    if (firstId) {
+      const el = document.getElementById(`bill-${firstId}`);
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    setTimeout(() => setHighlightedIds(new Set()), 2500);
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="min-h-screen bg-[var(--bg-page)] p-8 max-w-2xl mx-auto">
+      <h1 className="text-4xl font-bold mb-6 text-[var(--text-primary)]">
+        My Bills
+      </h1>
+
+      <ThemeToggle />
+
+      <Link
+        href="/history"
+        className="inline-block bg-[var(--bg-card)] border-2 border-[var(--border-default)] text-[var(--text-primary)] text-lg font-medium rounded-xl px-5 py-3 shadow-md hover:shadow-lg transition-all mb-6"
+      >
+        View paid bills history
+      </Link>
+
+      <ReminderBanner bills={bills} />
+
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="bg-[var(--bg-card)] rounded-2xl shadow-md p-5 text-center">
+          <p className="text-3xl font-bold text-amber-600">
+            {summary.dueSoonCount}
+          </p>
+          <p className="text-[var(--text-secondary)] text-sm mt-1">
+            Due this week
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="bg-[var(--bg-card)] rounded-2xl shadow-md p-5 text-center">
+          <p className="text-3xl font-bold text-red-600">
+            {summary.overdueCount}
+          </p>
+          <p className="text-[var(--text-secondary)] text-sm mt-1">Overdue</p>
         </div>
-      </main>
-    </div>
+        <div className="bg-[var(--bg-card)] rounded-2xl shadow-md p-5 text-center">
+          <p className="text-3xl font-bold text-[var(--accent-text)]">
+            ${summary.totalOwing.toFixed(2)}
+          </p>
+          <p className="text-[var(--text-secondary)] text-sm mt-1">
+            Total owing
+          </p>
+        </div>
+      </div>
+
+      <AddBillForm onAdd={handleAdd} />
+
+      <CalendarView bills={bills} onSelectDay={handleSelectDay} />
+
+      <div className="space-y-4">
+        {bills.map((bill) => (
+          <div
+            key={bill.id}
+            id={`bill-${bill.id}`}
+            className={`bg-[var(--bg-card)] rounded-2xl shadow-md hover:shadow-lg transition-all p-6 flex items-center gap-4 ${
+              highlightedIds.has(bill.id)
+                ? "ring-4 ring-[var(--accent-button-bg)]"
+                : ""
+            }`}
+          >
+            <BillIcon category={bill.category} />
+            <div className="flex-1">
+              <p className="text-xl font-semibold text-[var(--text-primary)]">
+                {bill.name}
+              </p>
+              <p className="text-[var(--text-secondary)]">
+                Due: {bill.dueDate}
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-2xl font-bold text-[var(--text-primary)]">
+                ${bill.amount.toFixed(2)}
+              </p>
+              <button
+                onClick={() => togglePaid(bill.id)}
+                className={
+                  bill.paid
+                    ? "text-[var(--accent-text)] font-semibold underline"
+                    : "text-amber-600 font-semibold underline"
+                }
+              >
+                {bill.paid ? "Paid" : "Mark as Paid"}
+              </button>
+              <button
+                onClick={() => deleteBill(bill.id)}
+                className="block mt-2 text-sm text-red-500 hover:text-red-700"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </main>
   );
 }
