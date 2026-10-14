@@ -1,3 +1,57 @@
+## Session: 14 October 2026
+
+### What's finished
+
+- **Calculator** (`/calculator`): plain calculator with large 4x5 keypad that fits a phone screen without scrolling. Small line above the number shows the sum in progress. Clear and Back buttons. Friendly message for divide by zero. Below the keypad, a tick list of unpaid bills with a "Ticked bills total" line and a "Use this total" button that puts the amount on the calculator screen
+- **Converter** (`/converter`): three simple screens (pick a topic, pick a conversion, type a number), with a "Swap direction" button. Topics: Length, Weight, Temperature, Cooking, Speed, Area. Cooking has an Australia / UK / US picker (Australian tablespoon = 20 ml, cup = 250 ml), remembered in localStorage as `measureRegion`
+- **Clean start**: new visitors now see an empty app with a "No bills yet" message instead of the three sample bills. Fixed a bug where deleting the last bill made it come back (a `loaded` flag now controls when bills are saved). The `sampleBills` import was removed from the main page
+- **Friendlier dates**: bills show as "12 December 2026" on the main page and History page instead of "2026-12-12"
+- **Help page** (`/help`): topics for calendar, calculator, converter, history, printing / saving a PDF, and putting the app on the home screen. Each topic has an id so a pill can jump straight to it, a thick outline on the topic you land on, and a "Back to where I was" button
+- **"How does this work?" pills** on the main page (above the calendar), Calculator page, all three Converter screens, and History page. A separate "How do I print or save a PDF?" pill sits just above "Print this list". "Put this on my home screen" button sits at the bottom of the main page. Pills on History are hidden when printing
+- **App icon and name**: `src/app/icon.tsx`, `src/app/apple-icon.tsx` and `src/app/manifest.ts`, drawn in code (cream bill with green tick on sage green `#4a7a2e`, cream `#f5f1e6`). App name is "Bill Toolkit", set in `layout.tsx`. Confirmed working by Les
+- **Home screen install help** covers iPhone / iPad (Safari), Android phone / tablet (Chrome) and laptop / computer (Chrome or Edge)
+
+### Key decisions & reasoning
+
+- Calculator buttons are large, not extra large, so the whole keypad fits on one phone screen without scrolling
+- Bill totals use a tick list rather than tap-to-add: ticks show what's included, and a wrong tick is easy to undo
+- Pills only go where a new user might get stuck (calendar, calculator, converter, history, printing). The Help page is a safety net, not a manual
+- Pill text uses plain words ("How does this work?"), not a "?" icon
+- No currency converter, because it needs live exchange rates from an outside service (same reason as no bank connections)
+- Region picker only appears on Cooking, because metres, kilograms and degrees are the same everywhere
+- Updates reach users automatically on each push (Vercel). Exception: the icon and name under it are saved by the phone when the shortcut is added, so changing them later means removing and re-adding the shortcut. Bills live on each person's own device and are not touched by updates
+
+### What didn't work / had to be fixed
+
+- Help page's History topic first said "Print button", but the real button says "Print this list". Fixed to match
+- The "2 of 2" Ctrl+H counter after a replace is normal, because the replacement text contains the Find text. Check with Ctrl+F (should be 1 of 1) before assuming it was added twice
+- A date fix looked like it hadn't worked until the browser was refreshed
+- The last commit also picked up `CONTEXT.md` (an app description file) and a 114-line tidy-up of `package-lock.json`. Both looked harmless
+- Pill order is slightly inconsistent: on the Converter it sits above "Back to my bills", on the Calculator below it. Left as is
+
+### Not yet confirmed
+
+- **iPhone home screen app storage**: the Help text says bills added in Safari first may not appear in the home screen version (iPhones keep separate storage). Written from general knowledge, so test this on an iPhone and update the Help wording to match
+- Phone / tablet print and "save as PDF" step in Help was also written from general knowledge. Check against what your phone shows
+- Reminder banner dates: not seen yet. If it shows 2026-09-15 style dates, fix the same way as the bill cards (it's in `src/components/ReminderBanner.tsx`)
+- Full mobile-friendliness check (phone and tablet, portrait and landscape)
+
+### Next steps (in priority order)
+
+1. Test on a real iPhone and tablet, then tidy the Help wording based on what you see
+2. Carer / family sharing: invite a family member to view (read-only) or get notified of overdue bills (planned paid-tier feature)
+3. Freemium paywall / tier logic when ready to monetise
+
+### Useful reference
+
+- Local dev: `cd ~/projects/seniors-bill-tracker && npm run dev` (the folder is lowercase `projects`, confirmed: full path `/home/les/projects/seniors-bill-tracker`)
+- Save and deploy in one paste (second terminal): `git add . && git commit -m "..." && git log --oneline -2 && git push`
+- New files this session: `src/app/calculator/page.tsx`, `converter/page.tsx`, `help/page.tsx`, `icon.tsx`, `apple-icon.tsx`, `manifest.ts`
+
+
+
+
+
 # Seniors Bill Tracker — Handover
 
 ## Session: [today's date]
@@ -40,6 +94,6 @@
 
 ### Useful reference
 
-- Local dev: `cd ~/Projects/seniors-bill-tracker && npm run dev`
+- Local dev: `cd ~/projects/seniors-bill-tracker && npm run dev`
 - Deploy: `git add . && git commit -m "..." && git push` (auto-deploys via Vercel)
 - Manual deploy if ever needed: `npx vercel --prod`
