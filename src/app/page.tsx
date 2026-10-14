@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { Bill } from "@/types/bill";
-import { sampleBills } from "@/data/sampleBills";
+
+
+      
 import { BillIcon } from "@/components/BillIcon";
 import { AddBillForm } from "@/components/AddBillForm";
 import { ReminderBanner } from "@/components/ReminderBanner";
@@ -12,21 +14,24 @@ import Link from "next/link";
 export default function Home() {
   const [bills, setBills] = useState<Bill[]>([]);
   const [highlightedIds, setHighlightedIds] = useState<Set<string>>(new Set());
+  // Becomes true once saved bills have been read, so we never save over them by mistake
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("bills");
     if (saved) {
       setBills(JSON.parse(saved));
-    } else {
-      setBills(sampleBills);
     }
+    // Mark as loaded, even when nothing was saved, so a new visitor starts with an empty list
+    setLoaded(true);
   }, []);
 
   useEffect(() => {
-    if (bills.length > 0) {
+      // Only save after the first read, otherwise an empty list would wipe saved bills
+    if (loaded) {
       localStorage.setItem("bills", JSON.stringify(bills));
     }
-  }, [bills]);
+  }, [bills, loaded]);
 
   const summary = useMemo(() => {
     const today = new Date();
@@ -140,7 +145,18 @@ export default function Home() {
 
       <CalendarView bills={bills} onSelectDay={handleSelectDay} />
 
-      <div className="space-y-4">
+        {loaded && bills.length === 0 && (
+        <div className="bg-[var(--bg-card)] rounded-2xl shadow-md p-6 mb-4 text-center">
+          <p className="text-2xl font-semibold text-[var(--text-primary)]">
+            No bills yet
+          </p>
+          <p className="text-lg text-[var(--text-secondary)] mt-2">
+            Use the form above to add your first bill.
+          </p>
+        </div>
+      )}
+
+      <div className="space-y-4"> 
         {bills.map((bill) => (
           <div
             key={bill.id}
