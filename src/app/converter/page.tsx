@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 
 type Region = "Australia" | "UK" | "US";
-type Topic = "Length" | "Weight" | "Temperature" | "Cooking" | "Speed" | "Area";
+type Topic = "Length" | "Weight" | "Temperature" | "Cooking" | "Speed" | "Area" | "Fuel";
 
 type Conversion = {
   id: string;
@@ -83,6 +83,37 @@ const conversions: Conversion[] = [
     ...byFactor((r) => (r === "US" ? 29.5735 : 28.4131)),
   },
 
+  // Litres to gallons for water and other liquids (gallon size changes by country)
+  {
+    id: "l-gal-cooking",
+    topic: "Cooking",
+    from: "Litres",
+    to: "Gallons",
+    ...byFactor((r) => 1 / (r === "US" ? 3.78541 : 4.54609)),
+  },
+
+  // Fuel
+  {
+    id: "l-gal-fuel",
+    topic: "Fuel",
+    from: "Litres",
+    to: "Gallons",
+    ...byFactor((r) => 1 / (r === "US" ? 3.78541 : 4.54609)),
+  },
+
+    // Fuel economy. Not a simple multiply: a lower L/100km is better, a higher MPG is better.
+  // The gallon size changes by country, so the answer matches the picked country.
+  {
+    id: "l100-mpg",
+    topic: "Fuel",
+    from: "Litres per 100 km",
+    to: "Miles per gallon",
+    forward: (x, r) =>
+      x === 0 ? 0 : (100 * (r === "US" ? 3.78541 : 4.54609)) / (x * 1.609344),
+    backward: (x, r) =>
+      x === 0 ? 0 : (100 * (r === "US" ? 3.78541 : 4.54609)) / (x * 1.609344),
+  },
+
   // Speed
   { id: "kmh-mph", topic: "Speed", from: "Kilometres per hour", to: "Miles per hour", ...byFactor(1 / 1.609344) },
 
@@ -97,7 +128,8 @@ const topics: { name: Topic; hint: string }[] = [
   { name: "Temperature", hint: "Celsius and Fahrenheit" },
   { name: "Cooking", hint: "Spoons, cups, millilitres" },
   { name: "Speed", hint: "Kilometres and miles per hour" },
-  { name: "Area", hint: "Square metres, hectares, acres" },
+   { name: "Area", hint: "Square metres, hectares, acres" },
+  { name: "Fuel", hint: "Litres, gallons, litres per 100 km, miles per gallon" },
 ];
 
 const regions: Region[] = ["Australia", "UK", "US"];
@@ -156,10 +188,10 @@ export default function ConverterPage() {
 
   // The country picker, only shown for Cooking
   const regionPicker =
-    topic === "Cooking" ? (
+    topic === "Cooking" || topic === "Fuel" ? (
       <div className="mb-6">
         <p className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
-          Whose spoons and cups?
+            {topic === "Fuel" ? "Whose gallons?" : "Whose spoons and cups?"}
         </p>
         <div className="grid grid-cols-3 gap-3">
           {regions.map((r) => (
@@ -238,6 +270,16 @@ export default function ConverterPage() {
             {result !== null ? fmt(result) : "—"}
           </p>
         </div>
+
+         {(conversion.id === "l-gal-cooking" ||
+          conversion.id === "l-gal-fuel" ||
+          conversion.id === "l100-mpg") && (
+          <p className="text-[var(--text-secondary)] text-lg mb-4">
+            {region === "US"
+              ? "In US, 1 gallon is the US gallon (3.785 litres)."
+              : `In ${region}, 1 gallon is the Imperial gallon (4.546 litres).`}
+          </p>
+        )}
 
         {conversion.topic === "Cooking" && conversion.one && (
           <p className="text-[var(--text-secondary)] text-lg mb-4">
