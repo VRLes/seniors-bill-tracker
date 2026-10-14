@@ -211,14 +211,7 @@ export default function Home() {
           </div>
         ))}
       </div>
-    <div className="mt-8">
-        <Link
-          href="/help#home-screen"
-          className="inline-block bg-[var(--bg-card)] border-2 border-[var(--border-default)] text-[var(--text-primary)] text-lg font-medium rounded-full px-5 py-2 shadow-md hover:shadow-lg transition-all"
-        >
-          Put this on my home screen
-        </Link>
-      </div>
+
     </main>
   );
 }
