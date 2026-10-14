@@ -95,6 +95,20 @@ export default function Home() {
         View paid bills history
       </Link>
 
+      <Link
+        href="/calculator"
+        className="inline-block bg-[var(--bg-card)] border-2 border-[var(--border-default)] text-[var(--text-primary)] text-lg font-medium rounded-xl px-5 py-3 shadow-md hover:shadow-lg transition-all mb-6 sm:ml-3"
+      >
+        Calculator
+      </Link>
+
+      <Link
+        href="/converter"
+        className="inline-block bg-[var(--bg-card)] border-2 border-[var(--border-default)] text-[var(--text-primary)] text-lg font-medium rounded-xl px-5 py-3 shadow-md hover:shadow-lg transition-all mb-6 sm:ml-3"
+      >
+        Converter
+      </Link>
+
       <ReminderBanner bills={bills} />
 
       <div className="grid grid-cols-3 gap-4 mb-6">
