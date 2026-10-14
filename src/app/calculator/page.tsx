@@ -188,7 +188,18 @@ export default function CalculatorPage() {
         Back to my bills
       </Link>
 
+      <div className="mb-4">
+        <Link
+          href="/help#calculator"
+          className="inline-block bg-[var(--bg-card)] border-2 border-[var(--border-default)] text-[var(--text-primary)] text-lg font-medium rounded-full px-5 py-2 shadow-md hover:shadow-lg transition-all"
+        >
+          How does this work?
+        </Link>
+      </div>
+
       {/* The screen. The small line shows the sum in progress, so nothing has to be remembered */}
+
+      
       <div className="bg-[var(--bg-card)] rounded-2xl shadow-md p-5 mb-4 text-right">
         <p className="text-[var(--text-secondary)] text-xl min-h-[1.75rem]">
           {stored !== null && op ? `${tidy(stored)} ${op}` : ""}

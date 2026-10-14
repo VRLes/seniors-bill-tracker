@@ -143,7 +143,18 @@ export default function Home() {
 
       <AddBillForm onAdd={handleAdd} />
 
+      <div className="mb-3">
+        <Link
+          href="/help#calendar"
+          className="inline-block bg-[var(--bg-card)] border-2 border-[var(--border-default)] text-[var(--text-primary)] text-lg font-medium rounded-full px-5 py-2 shadow-md hover:shadow-lg transition-all"
+        >
+          How does this work?
+        </Link>
+      </div>
+
       <CalendarView bills={bills} onSelectDay={handleSelectDay} />
+
+      
 
         {loaded && bills.length === 0 && (
         <div className="bg-[var(--bg-card)] rounded-2xl shadow-md p-6 mb-4 text-center">
@@ -173,7 +184,7 @@ export default function Home() {
                 {bill.name}
               </p>
               <p className="text-[var(--text-secondary)]">
-                Due: {bill.dueDate}
+                Due: {new Date(bill.dueDate + "T00:00:00").toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" })}
               </p>
             </div>
             <div className="text-right">

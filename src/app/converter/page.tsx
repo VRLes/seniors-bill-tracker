@@ -198,6 +198,15 @@ export default function ConverterPage() {
           Converter
         </h1>
 
+      <div className="mb-4">
+        <Link
+          href="/help#converter"
+          className="inline-block bg-[var(--bg-card)] border-2 border-[var(--border-default)] text-[var(--text-primary)] text-lg font-medium rounded-full px-5 py-2 shadow-md hover:shadow-lg transition-all"
+        >
+          How does this work?
+        </Link>
+      </div>
+
         <button onClick={() => setConversion(null)} className={backButton}>
           ← Back to {topic}
         </button>
@@ -257,6 +266,15 @@ export default function ConverterPage() {
           Converter
         </h1>
 
+      <div className="mb-4">
+        <Link
+          href="/help#converter"
+          className="inline-block bg-[var(--bg-card)] border-2 border-[var(--border-default)] text-[var(--text-primary)] text-lg font-medium rounded-full px-5 py-2 shadow-md hover:shadow-lg transition-all"
+        >
+          How does this work?
+        </Link>
+      </div>
+
         <button onClick={() => setTopic(null)} className={backButton}>
           ← Back to all topics
         </button>
@@ -290,6 +308,15 @@ export default function ConverterPage() {
       <h1 className="text-4xl font-bold mb-6 text-[var(--text-primary)]">
         Converter
       </h1>
+
+      <div className="mb-4">
+        <Link
+          href="/help#converter"
+          className="inline-block bg-[var(--bg-card)] border-2 border-[var(--border-default)] text-[var(--text-primary)] text-lg font-medium rounded-full px-5 py-2 shadow-md hover:shadow-lg transition-all"
+        >
+          How does this work?
+        </Link>
+      </div>
 
       <Link href="/" className={backButton}>
         Back to my bills

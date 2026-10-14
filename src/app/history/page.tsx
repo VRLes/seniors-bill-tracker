@@ -68,6 +68,15 @@ export default function HistoryPage() {
         Paid Bills History
       </h1>
 
+      <div className="print:hidden mb-6">
+        <Link
+          href="/help#history"
+          className="inline-block bg-[var(--bg-card)] border-2 border-[var(--border-default)] text-[var(--text-primary)] text-lg font-medium rounded-full px-5 py-2 shadow-md hover:shadow-lg transition-all"
+        >
+          How does this work?
+        </Link>
+      </div>
+
       <div className="print:hidden bg-[var(--bg-card)] rounded-2xl shadow-md p-6 mb-6 space-y-4">
         <p className="text-lg font-medium text-[var(--text-primary)]">
           Choose a date range
@@ -167,6 +176,17 @@ export default function HistoryPage() {
           </div>
 
           {paidBillsInRange.length > 0 && (
+            <div className="print:hidden mb-3">
+              <Link
+                href="/help#print"
+                className="inline-block bg-[var(--bg-card)] border-2 border-[var(--border-default)] text-[var(--text-primary)] text-lg font-medium rounded-full px-5 py-2 shadow-md hover:shadow-lg transition-all"
+              >
+                How do I print or save a PDF?
+              </Link>
+            </div>
+          )}
+
+          {paidBillsInRange.length > 0 && (
             <button
               onClick={() => window.print()}
               className="print:hidden w-full bg-[var(--accent-button-bg)] text-white text-xl font-semibold rounded-xl py-4 shadow-md hover:bg-[var(--accent-button-hover)] hover:shadow-lg transition-all mb-6"
@@ -192,7 +212,7 @@ export default function HistoryPage() {
                       {bill.name}
                     </p>
                     <p className="text-[var(--text-secondary)]">
-                      Due: {bill.dueDate}
+                      Due: {new Date(bill.dueDate + "T00:00:00").toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" })}
                     </p>
                   </div>
                   <p className="text-2xl font-bold text-[var(--text-primary)]">
