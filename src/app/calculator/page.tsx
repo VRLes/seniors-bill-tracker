@@ -157,6 +157,35 @@ export default function CalculatorPage() {
     setStartNew(true);
   }
 
+  // Percent button, phone style:
+  // 200 + 10 % gives 220, 200 × 10 % gives 20.
+  // + and − take the percent of the first number. × and ÷ use the plain percent.
+  function pressPercent() {
+    setNote("");
+    const current = parseFloat(display);
+
+    if (stored !== null && op) {
+      // A sum is waiting but no second number typed yet, so do nothing
+      if (startNew) return;
+
+      const amount =
+        op === "+" || op === "−" ? (stored * current) / 100 : current / 100;
+      const result = calculate(stored, amount, op);
+      if (result === null) {
+        clearAll("You can't divide by zero");
+        return;
+      }
+      setDisplay(tidy(result));
+      setStored(null);
+      setOp(null);
+      setStartNew(true);
+    } else {
+      // No sum waiting, so just turn the number into a percent (50 becomes 0.5)
+      setDisplay(tidy(current / 100));
+      setStartNew(true);
+    }
+  }
+
   // Removes the last number typed, like a pencil rubber
   function pressBack() {
     if (startNew) return;
@@ -215,7 +244,8 @@ export default function CalculatorPage() {
 
       <div className="grid grid-cols-4 gap-3">
         <Key label="Clear" onPress={() => clearAll()} style="clear" wide />
-        <Key label="Back" onPress={pressBack} style="clear" wide ariaLabel="Remove last number" />
+        <Key label="Back" onPress={pressBack} style="clear" ariaLabel="Remove last number" />
+        <Key label="%" onPress={pressPercent} style="operator" ariaLabel="percent" />
 
         <Key label="7" onPress={() => pressDigit("7")} />
         <Key label="8" onPress={() => pressDigit("8")} />
